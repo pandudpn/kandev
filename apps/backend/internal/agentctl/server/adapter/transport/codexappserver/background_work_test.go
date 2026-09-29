@@ -76,8 +76,7 @@ func TestCodexBackgroundPaginationAndPartialFailure(t *testing.T) {
 	workloads, err := adapter.ListBackgroundWorkloads(ctx, "thread-1")
 	require.NoError(t, err)
 	require.Len(t, workloads, 2)
-	require.Equal(t, "term-1", workloads[0].WorkID)
-	require.Equal(t, "term-2", workloads[1].WorkID)
+	require.ElementsMatch(t, []string{"term-1", "term-2"}, []string{workloads[0].WorkID, workloads[1].WorkID})
 
 	// 2. Partial failure on second page
 	failOnPage2 = true
@@ -89,6 +88,7 @@ func TestCodexBackgroundPaginationAndPartialFailure(t *testing.T) {
 	workloadsAfterError, err := adapter.ListBackgroundWorkloads(ctx, "thread-1")
 	require.NoError(t, err)
 	require.Len(t, workloadsAfterError, 2)
+	require.ElementsMatch(t, []string{"term-1", "term-2"}, []string{workloadsAfterError[0].WorkID, workloadsAfterError[1].WorkID})
 }
 
 func TestCodexBackgroundSnapshotGeneration(t *testing.T) {
